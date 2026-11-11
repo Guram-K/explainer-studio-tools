@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#06090c">
+<title>How These Videos Are Made</title>
+<meta name="description" content="The exact tools behind every short animated explainer: script, pictures, voice and animation.">
+<meta property="og:title" content="How these videos are made">
+<meta property="og:description" content="The exact tools behind every short animated explainer.">
+<meta property="og:image" content="avatar.png">
+<link rel="icon" href="avatar.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06090c;
+    --ink: #eef3f7;
+    --muted: #93a1ad;
+    --glass: rgba(255,255,255,0.045);
+    --glass-strong: rgba(255,255,255,0.08);
+    --chrome: linear-gradient(135deg, #5d6872 0%, #f4f8fb 18%, #8c99a5 32%, #ffffff 48%, #6f7c88 62%, #dfe7ee 80%, #56616b 100%);
+    --chrome-border: linear-gradient(135deg, rgba(255,255,255,.55), rgba(255,255,255,.08) 30%, rgba(170,200,230,.45) 55%, rgba(255,255,255,.06) 75%, rgba(255,255,255,.5));
+    --glow: #8fd3ff;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.55 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ---------- liquid metal background ---------- */
+  .liquid {
+    position: fixed; inset: -20vmax; z-index: 0; pointer-events: none;
+    filter: blur(60px) saturate(115%);
+    opacity: .75;
+  }
+  .liquid span {
+    position: absolute; border-radius: 50%;
+    mix-blend-mode: screen;
+    animation: drift 22s ease-in-out infinite alternate;
+  }
+  .liquid span:nth-child(1) { width: 60vmax; height: 60vmax; left: 10%; top: 0;   background: radial-gradient(circle at 35% 35%, #d9e4ee 0%, #4d5a66 35%, transparent 65%); }
+  .liquid span:nth-child(2) { width: 50vmax; height: 50vmax; right: 0;  top: 30%; background: radial-gradient(circle at 60% 40%, #3f8fc9 0%, #12324a 40%, transparent 68%); animation-duration: 28s; animation-delay: -6s; }
+  .liquid span:nth-child(3) { width: 42vmax; height: 42vmax; left: 25%; bottom: 0; background: radial-gradient(circle at 50% 50%, #b9c6d2 0%, #2a333b 45%, transparent 70%); animation-duration: 34s; animation-delay: -12s; }
+  .liquid span:nth-child(4) { width: 26vmax; height: 26vmax; left: 55%; top: 15%; background: radial-gradient(circle, rgba(255,140,50,.55) 0%, transparent 65%); animation-duration: 26s; animation-delay: -3s; }
+  @keyframes drift {
+    0%   { transform: translate(0,0) scale(1) rotate(0deg); }
+    50%  { transform: translate(6vmax,-4vmax) scale(1.12) rotate(25deg); }
+    100% { transform: translate(-5vmax,5vmax) scale(.92) rotate(-15deg); }
+  }
+  .grain {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .07;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  main { position: relative; z-index: 2; max-width: 480px; margin: 0 auto; padding: 44px 16px 48px; }
+
+  /* ---------- profile ---------- */
+  .profile { text-align: center; margin-bottom: 28px; }
+  .avatar {
+    position: relative; width: 112px; height: 112px; margin: 0 auto;
+    border-radius: 50%; padding: 4px;
+  }
+  .avatar::before {
+    content: ""; position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(from 0deg, #59636d, #ffffff, #7d8a96, #cfe6ff, #4b555e, #ffffff, #8a96a2, #59636d);
+    animation: spin 6s linear infinite;
+  }
+  .avatar::after {
+    content: ""; position: absolute; inset: -14px; border-radius: 50%; z-index: -1;
+    background: radial-gradient(circle, rgba(143,211,255,.35), transparent 65%);
+    animation: pulse 3.2s ease-in-out infinite;
+  }
+  .avatar img { position: relative; display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100% { opacity: .6; transform: scale(.95); } 50% { opacity: 1; transform: scale(1.05); } }
+
+  .handle { margin: 14px 0 0; font-weight: 600; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+  .chrome-text {
+    background: var(--chrome);
+    background-size: 250% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    animation: sheen 7s ease-in-out infinite;
+  }
+  @keyframes sheen { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+  h1 {
+    font-family: Unbounded, Inter, system-ui, sans-serif;
+    font-weight: 800; font-size: clamp(26px, 7.4vw, 34px);
+    line-height: 1.12; letter-spacing: -0.01em;
+    margin: 8px 0 10px;
+    filter: drop-shadow(0 2px 14px rgba(170,210,255,.25));
+  }
+  .intro { margin: 0 auto; max-width: 34ch; color: var(--muted); font-size: 15px; }
+
+  /* ---------- tool cards ---------- */
+  .section-label {
+    margin: 0 0 10px 4px; font-size: 11px; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--muted);
+  }
+  .tools { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .tool a {
+    display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 14px;
+    padding: 14px 14px 14px 14px;
+    border-radius: 16px;
+    background: rgba(14,19,24,.62);
+    border: 1px solid rgba(255,255,255,.09);
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+    color: inherit; text-decoration: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    transition: transform .2s ease, border-color .2s ease, background-color .2s ease;
+  }
+  .tool a:hover, .tool a:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(255,255,255,.22);
+    background: rgba(20,27,34,.72);
+  }
+  .tool a:focus-visible { outline: 2px solid var(--glow); outline-offset: 3px; }
+
+  /* monogram tile: dark with a hairline chrome edge */
+  .badge {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: grid; place-items: center;
+    border: 1px solid transparent;
+    background:
+      linear-gradient(#0d1216, #0d1216) padding-box,
+      var(--chrome-border) border-box;
+    font-weight: 600; font-size: 17px; letter-spacing: -.01em;
+  }
+  .badge span {
+    background: var(--chrome); background-size: 200% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .meta { min-width: 0; }
+  .role { display: block; font-size: 12px; color: var(--muted); }
+  .name { display: block; font-weight: 600; font-size: 16px; margin-top: 1px; }
+  .what { display: block; font-size: 13.5px; color: #a9b5bf; margin-top: 3px; line-height: 1.45; }
+
+  .go {
+    align-self: center;
+    font-size: 13px; font-weight: 600; white-space: nowrap;
+    padding: 7px 11px; border-radius: 999px;
+    color: var(--ink);
+    border: 1px solid rgba(255,255,255,.14);
+    transition: background-color .2s ease, border-color .2s ease;
+  }
+  .tool a:hover .go { border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.06); }
+
+  /* affiliate: same calm card, solid silver button */
+  .tool.featured .go {
+    color: #0b1015; border-color: transparent;
+    background: linear-gradient(180deg, #ffffff, #cfd7de);
+    box-shadow: inset 0 1px 0 #fff, 0 2px 8px -2px rgba(0,0,0,.6);
+  }
+  .tool.featured a:hover .go { background: linear-gradient(180deg, #ffffff, #e3e9ee); }
+  .pill {
+    display: inline-block; vertical-align: 1px; margin-left: 6px;
+    padding: 1px 7px; border-radius: 999px;
+    border: 1px solid rgba(255,190,120,.35);
+    color: #f3c48f; font-size: 10.5px; font-weight: 500;
+  }
+
+  .tools + .section-label { margin-top: 22px; }
+
+  /* ---------- stat ---------- */
+  .stat {
+    position: relative; margin-top: 24px; padding: 20px 16px; text-align: center;
+    border-radius: 20px; border: 1.5px solid transparent;
+    background:
+      linear-gradient(rgba(6,9,12,.7), rgba(6,9,12,.7)) padding-box,
+      var(--chrome-border) border-box;
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  }
+  .stat b { display: block; font-family: Unbounded, Inter, sans-serif; font-weight: 800; font-size: 40px; line-height: 1.1; }
+  .stat span { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+  /* ---------- disclosure ---------- */
+  .disclosure {
+    margin: 16px 0 0; padding: 12px 14px; border-radius: 14px;
+    background: var(--glass); border: 1px solid rgba(255,255,255,.08);
+    color: var(--muted); font-size: 12.5px; line-height: 1.55;
+  }
+  .disclosure b { color: var(--ink); }
+
+  footer { margin-top: 26px; text-align: center; font-size: 12px; color: #9aa6b0; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+  footer .legal { margin: 8px auto 0; max-width: 40ch; font-size: 11px; line-height: 1.5; color: #8794a0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="liquid" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+<div class="grain" aria-hidden="true"></div>
+
+<main>
+  <section class="profile">
+    <div class="avatar"><img src="avatar.png" alt="Channel logo: a chrome eye with a glowing gear"></div>
+    <p class="handle">SciLab</p>
+    <h1 class="chrome-text">How these videos are made</h1>
+    <p class="intro">One person, a small AI pipeline. These are the exact tools, in the order they run.</p>
+  </section>
+
+  <p class="section-label">The pipeline</p>
+  <ol class="tools">
+    <li class="tool">
+      <a href="https://claude.ai" target="_blank" rel="noopener">
+        <span class="badge" aria-hidden="true"><span>C</span></span>
+        <span class="meta">
+          <span class="role">Step 1 · Script &amp; automation</span>
+          <span class="name">Claude</span>
+          <span class="what">Researches the topic, writes the script and runs the whole pipeline.</span>
+        </span>
+        <span class="go">Visit ↗</span>
+      </a>
+    </li>
+
+    <li class="tool">
+      <a href="https://fal.ai" target="_blank" rel="noopener">
+        <span class="badge" aria-hidden="true"><span>f</span></span>
+        <span class="meta">
+          <span class="role">Step 2 · Pictures</span>
+          <span class="name">fal.ai · Nano Banana</span>
+          <span class="what">Generates every illustration and cleans up the backgrounds.</span>
+        </span>
+        <span class="go">Visit ↗</span>
+      </a>
+    </li>
+
+    <li class="tool featured">
+      <a href="https://try.elevenlabs.io/SciLab" target="_blank" rel="sponsored noopener">
+        <span class="badge" aria-hidden="true"><span>11</span></span>
+        <span class="meta">
+          <span class="role">Step 3 · Voice</span>
+          <span class="name">ElevenLabs <span class="pill">affiliate</span></span>
+          <span class="what">The narrator is the voice "Daniel", timed word by word for captions.</span>
+        </span>
+        <span class="go">Try it ↗</span>
+      </a>
+    </li>
+
+    <li class="tool">
+      <a href="https://www.remotion.dev" target="_blank" rel="noopener">
+        <span class="badge" aria-hidden="true"><span>R</span></span>
+        <span class="meta">
+          <span class="role">Step 4 · Animation</span>
+          <span class="name">Remotion</span>
+          <span class="what">Turns pictures, voice and captions into the final 9:16 video, in code.</span>
+        </span>
+        <span class="go">Visit ↗</span>
+      </a>
+    </li>
+  </ol>
+
+  <p class="section-label">Also in the toolbox</p>
+  <ul class="tools">
+    <li class="tool featured">
+      <!-- Keep the description true to how you actually use Higgsfield. -->
+      <a href="https://higgsfield.ai?fpr=sci-5b4f2a" target="_blank" rel="sponsored noopener">
+        <span class="badge" aria-hidden="true"><span>H</span></span>
+        <span class="meta">
+          <span class="role">Experiments</span>
+          <span class="name">Higgsfield <span class="pill">affiliate</span></span>
+          <span class="what">Where I try new image and video models by hand before they reach the pipeline.</span>
+        </span>
+        <span class="go">Try it ↗</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="stat">
+    <b class="chrome-text">&lt; $3</b>
+    <span>average cost per video</span>
+  </div>
+
+  <p class="disclosure"><b>Heads up:</b> links marked <b>affiliate</b> are referral links. If you sign up through one I may earn a commission, at no extra cost to you. The rest aren't sponsored.</p>
+
+  <footer>
+    Made with the same tools listed above.
+    <p class="legal">ElevenLabs and the ElevenLabs logo are trademarks of ElevenLabs, Inc. This page is not sponsored or endorsed by ElevenLabs or Higgsfield.</p>
+  </footer>
+</main>
+</body>
+</html>
